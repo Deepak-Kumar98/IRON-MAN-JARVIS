@@ -164,3 +164,36 @@ if __name__ == "__main__":
             except Exception as e:
                 print(e)
                 speak("Sorry my friend deepak bhai. I am not able to send this email")
+                
+        elif 'weather' in query:
+            try:
+                g = geocoder.ip('me')
+                loc = str(g)
+                loc.replace('<' , '')
+                loc.replace('>' , '')
+                loc.replace('[OK]' , '')
+                location = loc.split(' ')
+                cit = location[4]
+                cit = str(cit)
+                c = cit.replace('[' , '')
+                city = c.replace(',' , '')
+                url = f'https://api.openweathermap.org/data/2.5/weather?appid=3106c1bed9f39142e70a39e304b1387f&q={city}'
+                json_data = requests.get(url).json()
+                main = json_data['weather'][0]['main']
+                description = json_data['weather'][0]['description']
+                currenttemp = json_data['main']['temp']
+                cel = (currenttemp-273.15)
+                acttemp = cel.__round__(0)
+                feelslike = json_data['main']['feels_like']
+                celfel = feelslike-273.15
+                actfel = celfel.__round__(0)
+                Humidity = json_data['main']['humidity']
+                print(f'Main: {main}\nDescription: {description}\nTemprature: {acttemp}°C\nFeels Like: {actfel}°C\nHumidity: {Humidity}%')
+                speak(f'Main: {main}\nDescription: {description}\nTemprature: {acttemp}°C\nFeels Like: {actfel}°C\nHumidity: {Humidity}%')
+            except Exception as e:
+                speak('Sorry sir there was an issue')
+        
+        
+        elif 'shutdown' in query:
+            speak('shutting down')
+            os.system('shutdown -s -t 0')
